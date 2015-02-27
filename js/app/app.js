@@ -29,11 +29,44 @@ function EditorCtrl($scope, WorkspaceService) {
     };
 
     /**
+     * Get the value of the selected object property
+     * @param name
+     * @returns {*}
+     */
+    $scope.getProp = function(name) {
+        return WorkspaceService.getProp(getActiveCanvas(), name);
+    };
+
+    /**
+     * @param {string} [type]
+     */
+    $scope.getSelected = function(type) {
+        return WorkspaceService.getSelected(getActiveCanvas(), type);
+    };
+
+    /**
      * Remove selected object or group
      */
     $scope.removeSelected = function() {
         WorkspaceService.removeSelected(getActiveCanvas());
         $scope.$apply();
+    };
+
+    /**
+     * Set the passed object as an active
+     * @param {object} object
+     */
+    $scope.setSelected = function(object) {
+        WorkspaceService.setSelected(getActiveCanvas(), object);
+    };
+
+    /**
+     * Set the value of the selected object property
+     * @param {string} name
+     * @param {*} value
+     */
+    $scope.setProp = function(name, value) {
+        WorkspaceService.setProp(getActiveCanvas(), name, value);
     };
 
     /**

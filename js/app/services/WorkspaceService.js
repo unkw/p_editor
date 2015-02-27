@@ -20,6 +20,15 @@ angular.module('editor').factory('WorkspaceService', function($http) {
         canvas.deactivateAll().renderAll();
     };
 
+    service.getProp = function(canvas, name) {
+        var activeObject = canvas.getActiveObject();
+        return activeObject ? activeObject.get(name) : null;
+    };
+
+    service.getSelected = function(canvas, type) {
+        return canvas.getActiveObject() || canvas.getActiveGroup();
+    };
+
     /**
      * Загрузка данных макетов
      * @returns {$q.defer}
@@ -45,6 +54,20 @@ angular.module('editor').factory('WorkspaceService', function($http) {
                 canvas.remove(o);
             });
             canvas.discardActiveGroup().renderAll();
+        }
+    };
+
+    /**
+     *
+     * @param {object} canvas
+     * @param {string} name
+     * @param {*} value
+     */
+    service.setProp = function(canvas, name, value) {
+        var object = canvas.getActiveObject();
+        if (object) {
+            object.set(name, value);
+            canvas.renderAll();
         }
     };
 
