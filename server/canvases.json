@@ -1,0 +1,10 @@
+{
+    "result": [
+        {"data": {
+            "backgroundColor": "bisque"
+        }},
+        {"data": {
+            "backgroundColor": "#eee"
+        }}
+    ]
+}

@@ -1,0 +1,37 @@
+/**
+ * Рабочая область
+ */
+angular.module('editor').directive('workspace', function($rootScope) {
+
+    return {
+        restrict: 'A',
+        link: function($scope, element, attrs) {
+            $rootScope.workspaceWidth = element[0].offsetWidth;
+            $rootScope.workspaceHeight = Math.round($rootScope.workspaceWidth / 1.74);
+        }
+    };
+
+});
+
+angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
+
+    return {
+        scope: true,
+        restrict: 'E',
+        link: function($scope, element, attrs) {
+            function updateScope() { $scope.$apply(); }
+
+            var index = parseInt(attrs.index, 10);
+            var canvasEl = element.children('canvas').attr({
+                width: $scope.workspaceWidth,
+                height: $scope.workspaceHeight
+            });
+            element.append(canvasEl);
+
+            var canvas = WorkspaceService.canvases[index];
+            canvas.canvas = new fabric.Canvas(canvasEl[0], canvas.data)
+                .on('text:changed', updateScope);
+        }
+    };
+
+});

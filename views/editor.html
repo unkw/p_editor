@@ -1,0 +1,45 @@
+<h1>Полиграфический конструктор</h1>
+
+<div class="row b-editor voffset3" shortcut>
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <button class="btn btn-default btn-sm" ng-click="addText('Новый текст')" title="Добавить текст">
+                    <span class="glyphicon glyphicon-text-width" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="b-editor-canvas"  data-workspace>
+                    <canvas-fabric ng-repeat="item in canvases" ng-show="activeCanvasIndex === $index" data-index="{{ $index }}">
+                        <canvas></canvas>
+                    </canvas-fabric>
+                </div>
+
+            </div>
+
+            <div class="panel-footer">
+                <div class="btn-group">
+                    <label class="btn btn-default" ng-model="activeCanvasIndex" btn-radio="0">Front Side</label>
+                    <label class="btn btn-default" ng-model="activeCanvasIndex" btn-radio="1">Back Side</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <button type="button" class="btn btn-primary btn-sm btn-block" ng-click="addText('Новый текст')">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить текст
+                </button>
+            </div>
+
+            <div class="panel-body">
+                <div ng-repeat="item in canvases" ng-init="texts = item.canvas.getObjects(text)" ng-show="activeCanvasIndex === $index">
+                    <div ng-repeat="text in texts" ng-bind="text.getText()"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
