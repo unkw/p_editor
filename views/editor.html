@@ -38,10 +38,9 @@
                     <div ng-repeat="text in item.canvas.getObjects(text)">
                         <div class="input-group" ng-class="{voffset2: !$first}">
                             <textarea class="form-control" bind-value-to="text" ng-focus="setSelected(text)"
-                                      ng-bind="text.getText()"
-                                       rows="1" style="resize: none;"></textarea>
+                                ng-model="text.text" rows="1" style="resize: none;"></textarea>
                             <span class="input-group-btn">
-                                <button class="btn btn-danger" ng-click="item.canvas.remove(text)" type="button">
+                                <button class="btn btn-danger" ng-click="removeObject(text)" type="button">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </button>
                             </span>

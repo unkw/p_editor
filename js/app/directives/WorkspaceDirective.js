@@ -48,13 +48,11 @@ angular.module('editor').directive('bindValueTo', function() {
                 $scope.Utils.updateScope($scope);
             });
 
-            $scope.$watch(function() {
-                if ($scope.getSelected()) {
-                    return $scope.getProp(attrs.bindValueTo);
-                }
-            }, function (newValue) {
-                element.val(newValue);
-            });
+            //$scope.$watch(function() {
+            //    return $scope.getProp(attrs.bindValueTo);
+            //}, function (newValue) {
+            //    element.val(newValue);
+            //});
         }
     };
 });

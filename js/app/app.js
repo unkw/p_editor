@@ -44,6 +44,10 @@ function EditorCtrl($scope, WorkspaceService) {
         return WorkspaceService.getSelected(getActiveCanvas(), type);
     };
 
+    $scope.removeObject = function(object) {
+        WorkspaceService.removeObject(getActiveCanvas(), object);
+    };
+
     /**
      * Remove selected object or group
      */

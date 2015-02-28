@@ -40,6 +40,14 @@ angular.module('editor').factory('WorkspaceService', function($http) {
             });
     };
 
+    service.removeObject = function(canvas, object) {
+        if (canvas.getActiveGroup()) {
+            canvas.discardActiveGroup();
+        }
+
+        canvas.remove(object).renderAll();
+    };
+
     /**
      * Удалить выделенный объект или группу
      */
