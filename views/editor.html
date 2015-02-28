@@ -19,8 +19,12 @@
 
             <div class="panel-footer">
                 <div class="btn-group">
-                    <label class="btn btn-default" ng-model="activeCanvasIndex" btn-radio="0">Front Side</label>
-                    <label class="btn btn-default" ng-model="activeCanvasIndex" btn-radio="1">Back Side</label>
+                    <label class="btn btn-default btn-sm" ng-model="activeCanvasIndex" btn-radio="0">Front Side</label>
+                    <label class="btn btn-default btn-sm" ng-model="activeCanvasIndex" btn-radio="1">Back Side</label>
+                </div>
+
+                <div class="pull-right" ng-show="getSelected()">
+                    <button class="btn btn-danger btn-sm" ng-click="removeSelected()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                 </div>
             </div>
         </div>

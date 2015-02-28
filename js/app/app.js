@@ -53,7 +53,7 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.removeSelected = function() {
         WorkspaceService.removeSelected(getActiveCanvas());
-        $scope.$apply();
+        $scope.Utils.updateScope($scope);
     };
 
     /**

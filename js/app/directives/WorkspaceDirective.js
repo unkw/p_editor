@@ -19,6 +19,10 @@ angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
         scope: true,
         restrict: 'E',
         link: function($scope, element, attrs) {
+            function updateScope() {
+                $scope.Utils.updateScope($scope);
+            }
+
             var index = parseInt(attrs.index, 10);
             var canvasEl = element.children('canvas').attr({
                 width: $scope.workspaceWidth,
@@ -28,11 +32,9 @@ angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
 
             var canvas = WorkspaceService.canvases[index];
             canvas.canvas = new fabric.Canvas(canvasEl[0], canvas.data)
-                .on('text:changed', function() {
-                    $scope.Utils.updateScope($scope);
-                });
-
-            $scope.$watch();
+                .on('text:changed', updateScope)
+                .on('object:selected', updateScope)
+                .on('selection:cleared', updateScope);
         }
     };
 
