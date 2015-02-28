@@ -41,10 +41,7 @@ angular.module('editor').factory('WorkspaceService', function($http) {
     };
 
     service.removeObject = function(canvas, object) {
-        if (canvas.getActiveGroup()) {
-            canvas.discardActiveGroup();
-        }
-
+        canvas.discardActiveGroup();
         canvas.remove(object).renderAll();
     };
 
@@ -84,11 +81,8 @@ angular.module('editor').factory('WorkspaceService', function($http) {
      * @param {object} selected
      */
     service.setSelected = function(canvas, selected) {
-        if (selected.type === 'group') {
-            canvas.setActiveGroup(selected);
-        } else {
-            canvas.setActiveObject(selected);
-        }
+        canvas.discardActiveGroup();
+        canvas.setActiveObject(selected);
     };
 
     return service;
