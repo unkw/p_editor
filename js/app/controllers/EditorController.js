@@ -28,19 +28,20 @@ function EditorCtrl($scope, WorkspaceService) {
     };
 
     /**
-     * Get the value of the selected object property
-     * @param name
-     * @returns {*}
-     */
-    $scope.getProp = function(name) {
-        return WorkspaceService.getProp(getActiveCanvas(), name);
-    };
-
-    /**
      * @param {string} [type]
      */
     $scope.getSelected = function(type) {
         return WorkspaceService.getSelected(getActiveCanvas(), type);
+    };
+
+    /**
+     * Check exist value of property for the objects
+     * @param {string} name
+     * @param {*} value
+     * @returns {boolean}
+     */
+    $scope.isProp = function(name, value) {
+        return WorkspaceService.isProp(getActiveCanvas(), name, value);
     };
 
     /**
@@ -74,6 +75,16 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.setProp = function(name, value) {
         WorkspaceService.setProp(getActiveCanvas(), name, value);
+    };
+
+    /**
+     * Toggle the property of objects
+     * @param {string} name
+     * @param {*} value
+     */
+    $scope.toggleProp = function(name, value) {
+        WorkspaceService.toggleProp(getActiveCanvas(), name, value);
+        $scope.Utils.updateScope($scope);
     };
 
     /**

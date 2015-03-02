@@ -5,7 +5,10 @@
 angular.module('editor', ['ngRoute', 'ui.bootstrap'])
 
     .config(function($locationProvider, $routeProvider) {
-        $locationProvider.html5Mode(true);
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
 
         $routeProvider
 

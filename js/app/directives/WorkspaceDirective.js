@@ -34,6 +34,7 @@ angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
             canvas.canvas = new fabric.Canvas(canvasEl[0], canvas.data)
                 .on('text:changed', updateScope)
                 .on('object:selected', updateScope)
+                .on('object:modified', updateScope)
                 .on('selection:cleared', updateScope);
         }
     };
