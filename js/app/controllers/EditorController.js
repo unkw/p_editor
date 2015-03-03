@@ -11,32 +11,48 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.addText = function(text) {
         var canvas = getActiveCanvas();
-        var textObject = WorkspaceService.addText(canvas, text, {
+        var textObject = canvas.addText(text, {
             fontSize: 30,
             lineHeight: 1.1,
             padding: 5,
             fill: $scope.Utils.strRandomColor()
         });
 
-        WorkspaceService.setSelected(canvas, textObject);
+        canvas.setSelected(textObject);
     };
 
+    /**
+     * Bring to front the selected object
+     */
     $scope.bringToFront = function() {
-        WorkspaceService.bringToFront(getActiveCanvas());
+        getActiveCanvas().bringToFront();
     };
 
     /**
      * Discard selected object or group
      */
     $scope.discardSelected = function() {
-        WorkspaceService.discardSelected(getActiveCanvas());
+        getActiveCanvas().discardSelected();
     };
 
     /**
+     * Get objects of canvas
      * @param {string} [type]
      */
-    $scope.getSelected = function(type) {
-        return WorkspaceService.getSelected(getActiveCanvas(), type);
+    $scope.getObjects = function(type) {
+        return getActiveCanvas().getCanvas().getObjects(type);
+    };
+
+    /**
+     * Get selected object or group
+     * @returns {*}
+     */
+    $scope.getSelected = function() {
+        return getActiveCanvas().getSelected();
+    };
+
+    $scope.isSelected = function(object) {
+        return getActiveCanvas().isSelected(object);
     };
 
     /**
@@ -46,7 +62,7 @@ function EditorCtrl($scope, WorkspaceService) {
      * @returns {boolean}
      */
     $scope.isProp = function(name, value) {
-        return WorkspaceService.isProp(getActiveCanvas(), name, value);
+        return getActiveCanvas().isProp(name, value);
     };
 
     /**
@@ -54,19 +70,22 @@ function EditorCtrl($scope, WorkspaceService) {
      * @param {object} object
      */
     $scope.removeObject = function(object) {
-        WorkspaceService.removeObject(getActiveCanvas(), object);
+        getActiveCanvas().removeObject(object);
     };
 
     /**
      * Remove selected object or group
      */
     $scope.removeSelected = function() {
-        WorkspaceService.removeSelected(getActiveCanvas());
+        getActiveCanvas().removeSelected();
         $scope.Utils.updateScope($scope);
     };
 
+    /**
+     * Send to back the selected object
+     */
     $scope.sendToBack = function() {
-        WorkspaceService.sendToBack(getActiveCanvas());
+        getActiveCanvas().sendToBack();
     };
 
     /**
@@ -74,7 +93,7 @@ function EditorCtrl($scope, WorkspaceService) {
      * @param {object} object
      */
     $scope.setSelected = function(object) {
-        WorkspaceService.setSelected(getActiveCanvas(), object);
+        getActiveCanvas().setSelected(object);
     };
 
     /**
@@ -83,7 +102,7 @@ function EditorCtrl($scope, WorkspaceService) {
      * @param {*} value
      */
     $scope.setProp = function(name, value) {
-        WorkspaceService.setProp(getActiveCanvas(), name, value);
+        getActiveCanvas().setProp(name, value);
         $scope.Utils.updateScope($scope);
     };
 
@@ -93,7 +112,7 @@ function EditorCtrl($scope, WorkspaceService) {
      * @param {*} value
      */
     $scope.toggleProp = function(name, value) {
-        WorkspaceService.toggleProp(getActiveCanvas(), name, value);
+        getActiveCanvas().toggleProp(name, value);
         $scope.Utils.updateScope($scope);
     };
 

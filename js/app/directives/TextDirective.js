@@ -43,3 +43,19 @@ angular.module('editor').directive('bindValueTo', function() {
         }
     };
 });
+
+angular.module('editor').directive('focusModel', function($timeout) {
+    return {
+        restrict: 'A',
+
+        link: function ($scope, element, attrs) {
+            $scope.$watch(attrs.focusModel, function(value) {
+                if (value) {
+                    $timeout(function() {
+                        $scope.Utils.moveCaretToEnd(element[0]);
+                    });
+                }
+            });
+        }
+    };
+});

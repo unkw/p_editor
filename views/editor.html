@@ -44,7 +44,7 @@
             <div class="panel-body">
 
                 <div class="b-editor-canvas"  data-workspace>
-                    <canvas-fabric ng-repeat="item in canvases" ng-show="activeCanvasIndex === $index" data-index="{{ $index }}">
+                    <canvas-fabric ng-repeat="canvas in canvases" ng-show="activeCanvasIndex === $index" data-index="{{ $index }}">
                         <canvas></canvas>
                     </canvas-fabric>
                 </div>
@@ -72,11 +72,11 @@
             </div>
 
             <div class="panel-body">
-                <div ng-repeat="item in canvases" ng-show="activeCanvasIndex === $index">
-                    <div ng-repeat="text in item.canvas.getObjects(text)">
+                <div ng-repeat="item in canvases" ng-init="texts = getObjects(text)" ng-show="activeCanvasIndex === $index">
+                    <div ng-repeat="text in texts">
                         <div class="input-group" ng-class="{voffset2: !$first}">
                             <textarea class="form-control" bind-value-to="text" ng-focus="setSelected(text)"
-                                ng-model="text.text" rows="1" style="resize: vertical;"></textarea>
+                                ng-model="text.text" focus-model="isSelected(text)" rows="1" style="resize: vertical;"></textarea>
                             <span class="input-group-btn">
                                 <button class="btn btn-danger" ng-click="removeObject(text)" type="button">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>

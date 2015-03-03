@@ -5,6 +5,10 @@ angular.module('editor').factory('Utils', function() {
 
     var utils = {};
 
+    utils.moveCaretToEnd = function(el) {
+        el.setSelectionRange(el.value.length, el.value.length);
+    };
+
     /**
      * Generate a random color
      * @returns {string}

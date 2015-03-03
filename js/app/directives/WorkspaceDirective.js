@@ -13,7 +13,7 @@ angular.module('editor').directive('workspace', function($rootScope) {
 
 });
 
-angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
+angular.module('editor').directive('canvasFabric', function(WorkspaceService, Canvas) {
 
     return {
         scope: true,
@@ -31,7 +31,12 @@ angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
             element.append(canvasEl);
 
             var canvas = WorkspaceService.canvases[index];
-            canvas.canvas = new fabric.Canvas(canvasEl[0], canvas.data)
+            canvas.canvas = new Canvas({
+                el: canvasEl[0],
+                data: canvas.data
+            });
+
+            canvas.canvas.getCanvas()
                 .on('text:changed', updateScope)
                 .on('object:selected', updateScope)
                 .on('object:modified', updateScope)
