@@ -2,18 +2,17 @@
  * Created by kemal on 02.03.15.
  */
 
-angular.module('editor').directive('toggleProp', function() {
+angular.module('editor').directive('bindProp', function() {
     return {
         restrict: 'A',
         scope: true,
 
         link: function ($scope, element, attrs) {
-            var name = attrs.toggleProp;
+            var name = attrs.bindProp;
             var value = attrs.value;
 
             element.on('click', function() {
-                console.log(attrs.toggleType);
-                if (attrs.toggleType !== 'radio' || !$scope.isProp(name, value)) {
+                if (attrs.bindType !== 'radio' || !$scope.isProp(name, value)) {
                     $scope.toggleProp(name, value);
                 }
             });
@@ -23,6 +22,24 @@ angular.module('editor').directive('toggleProp', function() {
             }, function(val) {
                 element.toggleClass('active', val);
             });
+        }
+    };
+});
+
+angular.module('editor').directive('bindValueTo', function() {
+    return {
+        restrict: 'A',
+
+        link: function ($scope, element, attrs) {
+            element.on('change keyup paste select', function() {
+                $scope.setProp(attrs.bindValueTo, this.value);
+            });
+            //
+            //$scope.$watch(function() {
+            //    return $scope.getProp(attrs.bindValueTo);
+            //}, function (newValue) {
+            //    element.val(newValue);
+            //});
         }
     };
 });

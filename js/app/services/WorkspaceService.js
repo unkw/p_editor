@@ -22,6 +22,13 @@ angular.module('editor').factory('WorkspaceService', function($http) {
         return textObject.setCoords();
     };
 
+    service.bringToFront = function(canvas) {
+        var object = canvas.getActiveObject();
+        if (object) {
+            canvas.bringToFront(object);
+        }
+    };
+
     /**
      * Discard the active object or group
      * @param {object} canvas
@@ -108,6 +115,13 @@ angular.module('editor').factory('WorkspaceService', function($http) {
                 canvas.remove(object);
             });
             canvas.discardActiveGroup().renderAll();
+        }
+    };
+
+    service.sendToBack = function(canvas) {
+        var object = canvas.getActiveObject();
+        if (object) {
+            canvas.sendToBack(object);
         }
     };
 

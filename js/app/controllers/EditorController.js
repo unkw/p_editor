@@ -14,10 +14,15 @@ function EditorCtrl($scope, WorkspaceService) {
         var textObject = WorkspaceService.addText(canvas, text, {
             fontSize: 30,
             lineHeight: 1.1,
-            padding: 5
+            padding: 5,
+            fill: $scope.Utils.strRandomColor()
         });
 
         WorkspaceService.setSelected(canvas, textObject);
+    };
+
+    $scope.bringToFront = function() {
+        WorkspaceService.bringToFront(getActiveCanvas());
     };
 
     /**
@@ -60,6 +65,10 @@ function EditorCtrl($scope, WorkspaceService) {
         $scope.Utils.updateScope($scope);
     };
 
+    $scope.sendToBack = function() {
+        WorkspaceService.sendToBack(getActiveCanvas());
+    };
+
     /**
      * Set the passed object as an active
      * @param {object} object
@@ -75,6 +84,7 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.setProp = function(name, value) {
         WorkspaceService.setProp(getActiveCanvas(), name, value);
+        $scope.Utils.updateScope($scope);
     };
 
     /**

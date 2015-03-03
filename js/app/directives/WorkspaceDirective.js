@@ -40,22 +40,3 @@ angular.module('editor').directive('canvasFabric', function(WorkspaceService) {
     };
 
 });
-
-angular.module('editor').directive('bindValueTo', function() {
-    return {
-        restrict: 'A',
-
-        link: function ($scope, element, attrs) {
-            element.on('change keyup paste select', function() {
-                $scope.setProp(attrs.bindValueTo, this.value);
-                $scope.Utils.updateScope($scope);
-            });
-
-            //$scope.$watch(function() {
-            //    return $scope.getProp(attrs.bindValueTo);
-            //}, function (newValue) {
-            //    element.val(newValue);
-            //});
-        }
-    };
-});
