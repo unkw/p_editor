@@ -5,6 +5,18 @@ angular.module('editor').factory('Utils', function() {
 
     var utils = {};
 
+    /**
+     * @param {string} string
+     * @returns {string}
+     */
+    utils.capitalize = function(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    /**
+     * Move caret position to end
+     * @param {HTMLInputElement} el
+     */
     utils.moveCaretToEnd = function(el) {
         el.setSelectionRange(el.value.length, el.value.length);
     };
@@ -13,7 +25,7 @@ angular.module('editor').factory('Utils', function() {
      * Generate a random color
      * @returns {string}
      */
-    utils.strRandomColor = function() {
+    utils.randomColor = function() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
         for (var i = 0; i < 6; i++ ) {

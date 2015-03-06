@@ -11,12 +11,7 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.addText = function(text) {
         var canvas = getActiveCanvas();
-        var textObject = canvas.addText(text, {
-            fontSize: 30,
-            lineHeight: 1.1,
-            padding: 5,
-            fill: $scope.Utils.strRandomColor()
-        });
+        var textObject = canvas.addText(text);
 
         canvas.setSelected(textObject);
     };
@@ -36,7 +31,8 @@ function EditorCtrl($scope, WorkspaceService) {
     };
 
     /**
-     * Get objects of canvas
+     * Get objects of canvas by type
+     * If the type is undefined then returns all objects
      * @param {string} [type]
      */
     $scope.getObjects = function(type) {
@@ -45,10 +41,12 @@ function EditorCtrl($scope, WorkspaceService) {
 
     /**
      * Get selected object or group
+     * @param {string} [type]
      * @returns {*}
      */
-    $scope.getSelected = function() {
-        return getActiveCanvas().getSelected();
+    $scope.hasSelected = function(type) {
+        var canvas = getActiveCanvas();
+        return canvas && canvas.hasSelected(type);
     };
 
     $scope.isSelected = function(object) {

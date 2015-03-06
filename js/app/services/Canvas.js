@@ -3,7 +3,7 @@
  *
  * Canvas class
  */
-angular.module('editor').factory('Canvas', function() {
+angular.module('editor').factory('Canvas', function($rootScope) {
 
     var Canvas = function(options) {
         this.canvas = new fabric.Canvas(options.el, options.data);
@@ -13,13 +13,17 @@ angular.module('editor').factory('Canvas', function() {
     /**
      * Adding text
      * @param {string} text
-     * @param {object} options
      * @returns {fabric.IText}
      */
-    Canvas.prototype.addText = function(text, options) {
-        var textObject = new fabric.IText(text, options);
-        this.canvas.add(textObject).centerObject(textObject);
-        return textObject.setCoords();
+    Canvas.prototype.addText = function(text) {
+        var object = new fabric.IText(text, {
+            fontSize: 30,
+            lineHeight: 1.1,
+            padding: 5,
+            fill: '#555'
+        });
+        this.canvas.add(object);
+        return object.set(this.__getRandomPosition(object)).setCoords();
     };
 
     /**
@@ -59,20 +63,27 @@ angular.module('editor').factory('Canvas', function() {
     };
 
     /**
-     * Get selected object or group
-     * @returns {*}
-     */
-    Canvas.prototype.getSelected = function() {
-        return this.canvas.getActiveObject() || this.canvas.getActiveGroup();
-    };
-
-    /**
      * Get selected objects as array
      * @returns {Array}
      */
     Canvas.prototype.getSelectedAsArray = function() {
-        var active = this.getSelected();
+        var active = this.canvas.getActiveObject() || this.canvas.getActiveGroup();
         return active ? active.type === 'group' ? active.getObjects() : [active] : [];
+    };
+
+    /**
+     * Get selected object or group
+     * @param {string} [type]
+     * @returns {*}
+     */
+    Canvas.prototype.hasSelected = function(type) {
+        if (type) {
+            return this.getSelectedAsArray().some(function(object) {
+                return object.type === type;
+            });
+        } else {
+            return this.canvas.getActiveObject() || this.canvas.getActiveGroup();
+        }
     };
 
     Canvas.prototype.isSelected = function(object) {
@@ -131,7 +142,9 @@ angular.module('editor').factory('Canvas', function() {
      */
     Canvas.prototype.setProp = function(name, value) {
         this.getSelectedAsArray().forEach(function(object) {
-            object.set(name, value);
+            if (angular.isFunction(object['set' + $rootScope.Utils.capitalize(name)])) {
+                object.set(name, value);
+            }
         });
         this.canvas.renderAll();
     };
@@ -151,6 +164,19 @@ angular.module('editor').factory('Canvas', function() {
      */
     Canvas.prototype.toggleProp = function(name, value) {
         this.setProp(name, this.isProp.apply(this, arguments) ? '' : value);
+    };
+
+    /**
+     * @param {object} o
+     * @returns {{top: number, left: number}}
+     * @private
+     */
+    Canvas.prototype.__getRandomPosition = function(o) {
+        var indent = 15;
+        return {
+            top: _.random(indent, this.canvas.getHeight() - o.getHeight() - indent),
+            left: _.random(indent, this.canvas.getWidth() - o.getWidth() - indent)
+        };
     };
 
     return Canvas;
