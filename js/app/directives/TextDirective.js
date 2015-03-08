@@ -34,12 +34,15 @@ angular.module('editor').directive('bindValueTo', function() {
             element.on('change keyup paste select', function() {
                 $scope.setProp(attrs.bindValueTo, this.value);
             });
-            //
-            //$scope.$watch(function() {
-            //    return $scope.getProp(attrs.bindValueTo);
-            //}, function (newValue) {
-            //    element.val(newValue);
-            //});
+
+            if (!attrs.ngModel) {
+                $scope.$watch(function() {
+                    var values = _.uniq($scope.getProp(attrs.bindValueTo));
+                    return values.length === 1 ? values[0] : '';
+                }, function (value) {
+                    element.val(value);
+                });
+            }
         }
     };
 });

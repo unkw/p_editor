@@ -3,7 +3,7 @@
  *
  * Canvas class
  */
-angular.module('editor').factory('Canvas', function($rootScope) {
+angular.module('editor').factory('Canvas', function($rootScope, config) {
 
     var Canvas = function(options) {
         this.canvas = new fabric.Canvas(options.el, options.data);
@@ -13,15 +13,16 @@ angular.module('editor').factory('Canvas', function($rootScope) {
     /**
      * Adding text
      * @param {string} text
+     * @param {object} [options]
      * @returns {fabric.IText}
      */
-    Canvas.prototype.addText = function(text) {
-        var object = new fabric.IText(text, {
+    Canvas.prototype.addText = function(text, options) {
+        var object = new fabric.IText(text, angular.extend({
             fontSize: 30,
             lineHeight: 1.1,
             padding: 5,
-            fill: '#555'
-        });
+            fill: config.font.defaultFillColor
+        }, options));
         this.canvas.add(object);
         return object.set(this.__getRandomPosition(object)).setCoords();
     };

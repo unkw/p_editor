@@ -1,9 +1,14 @@
 /**
  * Created by kemal on 28.02.15
  */
-function EditorCtrl($scope, WorkspaceService) {
+function EditorCtrl($scope, WorkspaceService, config) {
     $scope.activeCanvasIndex = 0;
     $scope.canvases = WorkspaceService.canvases;
+    $scope.font = {
+        families: config.font.families,
+        lastFillColor: config.font.defaultFillColor,
+        sizes: WorkspaceService.getFontSizes()
+    };
 
     /**
      * Add text
@@ -11,7 +16,9 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.addText = function(text) {
         var canvas = getActiveCanvas();
-        var textObject = canvas.addText(text);
+        var textObject = canvas.addText(text, {
+            fill: $scope.font.lastFillColor
+        });
 
         canvas.setSelected(textObject);
     };
@@ -37,6 +44,15 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.getObjects = function(type) {
         return getActiveCanvas().getCanvas().getObjects(type);
+    };
+
+    /**
+     * @param {string} name
+     * @returns {Array}
+     */
+    $scope.getProp = function(name) {
+        var canvas = getActiveCanvas();
+        return canvas && canvas.getProp(name) || [];
     };
 
     /**
@@ -84,6 +100,11 @@ function EditorCtrl($scope, WorkspaceService) {
      */
     $scope.sendToBack = function() {
         getActiveCanvas().sendToBack();
+    };
+
+    $scope.setFillColor = function(color) {
+        $scope.font.lastFillColor = color;
+        $scope.setProp('fill', color);
     };
 
     /**
