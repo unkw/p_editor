@@ -1,15 +1,12 @@
 /**
  * Global helper functions
  */
-angular.module('editor').factory('Utils', function() {
-
-    var utils = {};
-
+angular.module('editor').service('Utils', function() {
     /**
      * @param {string} string
      * @returns {string}
      */
-    utils.capitalize = function(string) {
+    this.capitalize = function(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
@@ -17,15 +14,16 @@ angular.module('editor').factory('Utils', function() {
      * Move caret position to end
      * @param {HTMLInputElement} el
      */
-    utils.moveCaretToEnd = function(el) {
-        el.setSelectionRange(el.value.length, el.value.length);
+    this.moveCaretToEnd = function(el) {
+        var elemValLength = el.value.length;
+        el.setSelectionRange(elemValLength, elemValLength);
     };
 
     /**
      * Generate a random color
      * @returns {string}
      */
-    utils.randomColor = function() {
+    this.randomColor = function() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
         for (var i = 0; i < 6; i++ ) {
@@ -38,9 +36,7 @@ angular.module('editor').factory('Utils', function() {
      * Correctly update the scope
      * @param {object} $scope
      */
-    utils.updateScope = function($scope) {
+    this.updateScope = function($scope) {
         if (!$scope.$$phase) $scope.$apply();
     };
-
-    return utils;
 });

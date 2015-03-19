@@ -19,5 +19,7 @@ angular.module('editor').constant('config', {
             'Ubuntu', 'Verdana'
         ],
         size: [6, 96]
-    }
+    },
+
+    maxHistoryLength: 15
 });

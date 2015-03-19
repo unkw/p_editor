@@ -26,6 +26,4 @@ angular.module('editor', ['ngRoute', 'ui.bootstrap'])
         $rootScope.Utils = Utils;
     })
 
-    .controller('AppCtrl', function() {})
-
-;
+    .controller('AppCtrl', function() {});

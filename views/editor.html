@@ -4,6 +4,15 @@
             <div class="panel-heading">
 
                 <div class="btn-group">
+                    <button class="btn btn-default btn-xs" ng-click="undo()" ng-disabled="!canUseUndo()" title="Отменить">
+                        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+                    </button>
+                    <button class="btn btn-default btn-xs" ng-click="redo()" ng-disabled="!canUseRedo()" title="Вернуть">
+                        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+                <div class="btn-group">
                     <button class="btn btn-default btn-xs" ng-click="addText('Новый текст')" title="Добавить текст">
                         <span class="glyphicon glyphicon-text-width" aria-hidden="true"></span>
                     </button>
