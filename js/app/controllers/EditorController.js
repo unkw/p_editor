@@ -31,6 +31,19 @@ function EditorCtrl($scope, WorkspaceService, config) {
     };
 
     /**
+     * Undo changes in selected Canvas
+     */
+    $scope.undo = function() {
+        getActiveCanvas().undo();
+    };
+
+    /**
+     * Redo changes in active canvas
+     */
+    $scope.redo = function() {
+        getActiveCanvas().redo();
+    };
+    /**
      * Discard selected object or group
      */
     $scope.discardSelected = function() {
@@ -67,6 +80,18 @@ function EditorCtrl($scope, WorkspaceService, config) {
 
     $scope.isSelected = function(object) {
         return getActiveCanvas().isSelected(object);
+    };
+
+    $scope.canUseUndo = function() {
+        var activeCanvas = getActiveCanvas();
+
+        return activeCanvas && activeCanvas.canUseUndo();
+    };
+
+    $scope.canUseRedo = function() {
+        var activeCanvas = getActiveCanvas();
+
+        return activeCanvas && activeCanvas.canUseRedo();
     };
 
     /**

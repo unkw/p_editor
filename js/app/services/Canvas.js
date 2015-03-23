@@ -6,8 +6,72 @@
 angular.module('editor').factory('Canvas', function($rootScope, config) {
 
     var Canvas = function(options) {
+
         this.canvas = new fabric.Canvas(options.el, options.data);
+        this.__states = []; // History state
+        this.__stateIndex = 0; // Current state Index in history
+        this.__needSaveState = true; // flag that allows save state
+        this.__initHist();
+
         return this;
+    };
+
+    /**
+     * Add state to history
+     * @param state
+     */
+    Canvas.prototype.addState = function(state) {
+        var states = this.__states,
+            stateLength = states.length;
+
+        if (stateLength !== this.__stateIndex) {
+            states.length = this.__stateIndex;
+        }
+
+        if (stateLength === config.maxHistoryLength) {
+            states.shift();
+        }
+
+        this.__stateIndex++;
+        states.push(state);
+    };
+
+    /**
+     * Getting history state by state index
+     * @param index number
+     * @returns {*}
+     */
+    Canvas.prototype.getState = function(index) {
+        var states = this.__states,
+            newState = this.__stateIndex + index;
+
+        if (states.length < newState || newState < 0) {
+            return undefined;
+        }
+
+        this.__stateIndex = newState;
+
+        return states[this.__stateIndex - 1];
+    };
+
+    /**
+     * Redo changes
+     * @param changesCount
+     */
+    Canvas.prototype.redo = function(changesCount) {
+        changesCount = changesCount || 1;
+
+        this.__loadHist(this.getState(changesCount));
+    };
+
+    /**
+     * Undo changes
+     * @param changesCount
+     */
+    Canvas.prototype.undo = function(changesCount) {
+        changesCount = changesCount || -1;
+
+        this.__loadHist(this.getState(changesCount));
     };
 
     /**
@@ -69,7 +133,11 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      */
     Canvas.prototype.getSelectedAsArray = function() {
         var active = this.canvas.getActiveObject() || this.canvas.getActiveGroup();
-        return active ? active.type === 'group' ? active.getObjects() : [active] : [];
+        return active ?
+            active.type === 'group' ?
+                active.getObjects() :
+                [active] :
+            [];
     };
 
     /**
@@ -178,6 +246,61 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
             top: _.random(indent, this.canvas.getHeight() - o.getHeight() - indent),
             left: _.random(indent, this.canvas.getWidth() - o.getWidth() - indent)
         };
+    };
+
+    /**
+     * @private Load current state from JSON object
+     * @param {JSON} state
+     * @private
+     */
+    Canvas.prototype.__loadHist = function(state) {
+        if (!state) {
+            return;
+        }
+
+        var canvas = this.canvas;
+
+        this.__needSaveState = false;
+        canvas.clear().renderAll();
+        canvas.loadFromJSON(state);
+        canvas.renderAll();
+        this.__needSaveState = true;
+    };
+
+    /**
+     * @private Preserves the history of changes to the Editor
+     * @param needSave
+     * @private
+     */
+    Canvas.prototype.__saveToHist = function() {
+        if (this.__needSaveState) {
+            this.addState(JSON.stringify(this.canvas));
+        }
+    };
+
+    /**
+     * @private Initialize save state on canvas change
+     */
+    Canvas.prototype.__initHist = function() {
+        var self = this;
+
+        function saveState() {
+            self.__saveToHist();
+        }
+
+        saveState();
+        this.canvas
+            .on('text:changed', saveState)
+            .on('object:modified', saveState)
+            .on('selection:cleared', saveState);
+    };
+
+    Canvas.prototype.canUseUndo = function() {
+        return this.__stateIndex > 1;
+    };
+
+    Canvas.prototype.canUseRedo = function() {
+        return this.__states.length > this.__stateIndex;
     };
 
     return Canvas;

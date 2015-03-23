@@ -1,18 +1,16 @@
 /**
  * Сервис рабочей области редактора
  */
-angular.module('editor').factory('WorkspaceService', function($http, config) {
-    var service = {};
-
+angular.module('editor').service('WorkspaceService', function($http, config) {
     /**
      * @type {Array}
      */
-    service.canvases = [];
+    this.canvases = [];
 
     /**
      * @returns {Array}
      */
-    service.getFontSizes = function() {
+    this.getFontSizes = function() {
         var sizes = [];
         var fontSize = config.font.size;
 
@@ -27,12 +25,12 @@ angular.module('editor').factory('WorkspaceService', function($http, config) {
      * Loads data of canvas
      * @returns {$q.defer}
      */
-    service.loadCanvases = function() {
+    this.loadCanvases = function() {
+        var self = this;
+
         return $http.get('server/canvases.json')
             .success(function(response) {
-                service.canvases = response.result;
+                self.canvases = response.result;
             });
     };
-
-    return service;
 });
