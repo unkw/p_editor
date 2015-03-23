@@ -87,8 +87,9 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
             padding: 5,
             fill: config.font.defaultFillColor
         }, options));
+        object.set(this.__getRandomPosition(object)).setCoords();
         this.canvas.add(object);
-        return object.set(this.__getRandomPosition(object)).setCoords();
+        return object;
     };
 
     /**
@@ -210,12 +211,18 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      * @param {*} value
      */
     Canvas.prototype.setProp = function(name, value) {
+        var canvas = this.canvas,
+            needTriggerEvent = false;
+
         this.getSelectedAsArray().forEach(function(object) {
             if (angular.isFunction(object['set' + $rootScope.Utils.capitalize(name)])) {
                 object.set(name, value);
+                needTriggerEvent = true;
             }
         });
-        this.canvas.renderAll();
+
+        needTriggerEvent && canvas.trigger('object:modified');
+        canvas.renderAll();
     };
 
     /**
@@ -292,7 +299,9 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
         this.canvas
             .on('text:changed', saveState)
             .on('object:modified', saveState)
-            .on('selection:cleared', saveState);
+            .on('object:added', saveState)
+            .on('object:removed', saveState)
+            .on('path:created', saveState);
     };
 
     Canvas.prototype.canUseUndo = function() {
