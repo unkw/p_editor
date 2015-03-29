@@ -21,20 +21,16 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
     Canvas.prototype.addImage = function(url) {
         var deferred = $q.defer();
         var canvas = this.canvas;
-        var image = new Image();
-        image.src = url;
 
-        image.onload = function() {
-            fabric.Image.fromURL(image.src, function (object) {
-                object.set({
-                    top: 0,
-                    left: 0
-                }).setCoords();
-                canvas.add(object);
+        fabric.Image.fromURL(url, function (object) {
+            object.set({
+                top: 0,
+                left: 0
+            }).setCoords();
+            canvas.add(object);
 
-                deferred.resolve(object);
-            });
-        };
+            deferred.resolve(object);
+        });
 
         return deferred.promise;
     };
