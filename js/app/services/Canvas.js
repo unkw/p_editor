@@ -3,7 +3,7 @@
  *
  * Canvas class
  */
-angular.module('editor').factory('Canvas', function($rootScope, config) {
+angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
 
     var Canvas = function(options) {
 
@@ -60,7 +60,6 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      */
     Canvas.prototype.redo = function(changesCount) {
         changesCount = changesCount || 1;
-
         this.__loadHist(this.getState(changesCount));
     };
 
@@ -70,8 +69,33 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      */
     Canvas.prototype.undo = function(changesCount) {
         changesCount = changesCount || -1;
-
         this.__loadHist(this.getState(changesCount));
+    };
+
+    /**
+     * Add image
+     * @param {string} url
+     * @returns {*}
+     */
+    Canvas.prototype.addImage = function(url) {
+        var deferred = $q.defer();
+        var canvas = this.canvas;
+        var image = new Image();
+        image.src = url;
+
+        image.onload = function() {
+            fabric.Image.fromURL(image.src, function (object) {
+                canvas.add(object);
+                object.set({
+                    top: 0,
+                    left: 0
+                }).setCoords();
+
+                deferred.resolve(object);
+            });
+        };
+
+        return deferred.promise;
     };
 
     /**
@@ -82,7 +106,8 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      */
     Canvas.prototype.addText = function(text, options) {
         var object = new fabric.IText(text, angular.extend({
-            fontSize: 30,
+            fontFamily: 'Arial',
+            fontSize: 40,
             lineHeight: 1.1,
             padding: 5,
             fill: config.font.defaultFillColor
@@ -276,7 +301,6 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
 
     /**
      * @private Preserves the history of changes to the Editor
-     * @param needSave
      * @private
      */
     Canvas.prototype.__saveToHist = function() {
