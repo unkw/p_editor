@@ -26,11 +26,11 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
 
         image.onload = function() {
             fabric.Image.fromURL(image.src, function (object) {
-                canvas.add(object);
                 object.set({
                     top: 0,
                     left: 0
                 }).setCoords();
+                canvas.add(object);
 
                 deferred.resolve(object);
             });
@@ -321,10 +321,11 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
         var canvas = this.canvas;
 
         this.__needSaveState = false;
-        canvas.clear().renderAll();
-        canvas.loadFromJSON(state);
-        canvas.renderAll();
-        this.__needSaveState = true;
+        canvas.clear();
+        canvas.loadFromJSON(state, function() {
+            canvas.renderAll();
+            this.__needSaveState = true;
+        }.bind(this));
     };
 
     /**
