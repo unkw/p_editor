@@ -39,7 +39,6 @@ angular.module('editor').directive('colorPicker', function($parse, config) {
     ColorPicker.prototype = {
         initialize: function() {
             this.el.on('click', function(e) {
-                //e.stopPropagation();
                 if (this.__isOpen) {
                     this.close();
                 } else {

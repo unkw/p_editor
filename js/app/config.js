@@ -13,7 +13,7 @@ angular.module('editor').constant('config', {
 
     font: {
         defaultFillColor: '#444444',
-        families: ['Arial Black', 'Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Lucida Console',
+        families: ['Arial Black', 'Arial', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Impact', 'Lucida Console',
             'Lucida Sans Unicode', 'Open Sens', 'Open Sens Condensed', 'Palatino Linotype', 'PT Sans',
             'PT Sans Narrow', 'Roboto', 'Roboto Condensed', 'Robot Slab', 'Tahoma', 'Times New Roman', 'Trebuchet MS',
             'Ubuntu', 'Verdana'

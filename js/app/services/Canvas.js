@@ -3,17 +3,40 @@
  *
  * Canvas class
  */
-angular.module('editor').factory('Canvas', function($rootScope, config) {
+angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
 
     var Canvas = function(options) {
 
         this.canvas = new fabric.Canvas(options.el, options.data);
-        this.__states = []; // History state
-        this.__stateIndex = 0; // Current state Index in history
-        this.__needSaveState = true; // flag that allows save state
         this.__initHist();
 
         return this;
+    };
+
+    /**
+     * Add image
+     * @param {string} url
+     * @returns {*}
+     */
+    Canvas.prototype.addImage = function(url) {
+        var deferred = $q.defer();
+        var canvas = this.canvas;
+        var image = new Image();
+        image.src = url;
+
+        image.onload = function() {
+            fabric.Image.fromURL(image.src, function (object) {
+                canvas.add(object);
+                object.set({
+                    top: 0,
+                    left: 0
+                }).setCoords();
+
+                deferred.resolve(object);
+            });
+        };
+
+        return deferred.promise;
     };
 
     /**
@@ -37,44 +60,6 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
     };
 
     /**
-     * Getting history state by state index
-     * @param index number
-     * @returns {*}
-     */
-    Canvas.prototype.getState = function(index) {
-        var states = this.__states,
-            newState = this.__stateIndex + index;
-
-        if (states.length < newState || newState < 0) {
-            return undefined;
-        }
-
-        this.__stateIndex = newState;
-
-        return states[this.__stateIndex - 1];
-    };
-
-    /**
-     * Redo changes
-     * @param changesCount
-     */
-    Canvas.prototype.redo = function(changesCount) {
-        changesCount = changesCount || 1;
-
-        this.__loadHist(this.getState(changesCount));
-    };
-
-    /**
-     * Undo changes
-     * @param changesCount
-     */
-    Canvas.prototype.undo = function(changesCount) {
-        changesCount = changesCount || -1;
-
-        this.__loadHist(this.getState(changesCount));
-    };
-
-    /**
      * Adding text
      * @param {string} text
      * @param {object} [options]
@@ -82,7 +67,8 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
      */
     Canvas.prototype.addText = function(text, options) {
         var object = new fabric.IText(text, angular.extend({
-            fontSize: 30,
+            fontFamily: 'Arial',
+            fontSize: 40,
             lineHeight: 1.1,
             padding: 5,
             fill: config.font.defaultFillColor
@@ -100,6 +86,14 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
         if (object) {
             this.canvas.bringToFront(object);
         }
+    };
+
+    Canvas.prototype.canUseUndo = function() {
+        return this.__stateIndex > 1;
+    };
+
+    Canvas.prototype.canUseRedo = function() {
+        return this.__states.length > this.__stateIndex;
     };
 
     /**
@@ -142,6 +136,24 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
     };
 
     /**
+     * Getting history state by state index
+     * @param index number
+     * @returns {*}
+     */
+    Canvas.prototype.getState = function(index) {
+        var states = this.__states,
+            newState = this.__stateIndex + index;
+
+        if (states.length < newState || newState < 0) {
+            return undefined;
+        }
+
+        this.__stateIndex = newState;
+
+        return states[this.__stateIndex - 1];
+    };
+    
+    /**
      * Get selected object or group
      * @param {string} [type]
      * @returns {*}
@@ -172,6 +184,15 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
         return propValues.length !== 0 && propValues.every(function(propValue) {
             return propValue === value;
         });
+    };
+
+    /**
+     * Redo changes
+     * @param changesCount
+     */
+    Canvas.prototype.redo = function(changesCount) {
+        changesCount = changesCount || 1;
+        this.__loadHist(this.getState(changesCount));
     };
 
     /**
@@ -243,6 +264,38 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
     };
 
     /**
+     * Undo changes
+     * @param changesCount
+     */
+    Canvas.prototype.undo = function(changesCount) {
+        changesCount = changesCount || -1;
+        this.__loadHist(this.getState(changesCount));
+    };
+
+    /**
+     * @private Initialize save state on canvas change
+     */
+    Canvas.prototype.__initHist = function() {
+        var self = this;
+
+        function saveState() {
+            self.__saveToHist();
+        }
+
+        this.__states = []; // History state
+        this.__stateIndex = 0; // Current state Index in history
+        this.__needSaveState = true; // flag that allows save state
+
+        saveState();
+        this.canvas
+            .on('text:changed', saveState)
+            .on('object:modified', saveState)
+            .on('object:added', saveState)
+            .on('object:removed', saveState)
+            .on('path:created', saveState);
+    };
+
+    /**
      * @param {object} o
      * @returns {{top: number, left: number}}
      * @private
@@ -276,40 +329,12 @@ angular.module('editor').factory('Canvas', function($rootScope, config) {
 
     /**
      * @private Preserves the history of changes to the Editor
-     * @param needSave
      * @private
      */
     Canvas.prototype.__saveToHist = function() {
         if (this.__needSaveState) {
             this.addState(JSON.stringify(this.canvas));
         }
-    };
-
-    /**
-     * @private Initialize save state on canvas change
-     */
-    Canvas.prototype.__initHist = function() {
-        var self = this;
-
-        function saveState() {
-            self.__saveToHist();
-        }
-
-        saveState();
-        this.canvas
-            .on('text:changed', saveState)
-            .on('object:modified', saveState)
-            .on('object:added', saveState)
-            .on('object:removed', saveState)
-            .on('path:created', saveState);
-    };
-
-    Canvas.prototype.canUseUndo = function() {
-        return this.__stateIndex > 1;
-    };
-
-    Canvas.prototype.canUseRedo = function() {
-        return this.__states.length > this.__stateIndex;
     };
 
     return Canvas;

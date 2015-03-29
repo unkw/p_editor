@@ -4,17 +4,24 @@
             <div class="panel-heading">
 
                 <div class="btn-group">
-                    <button class="btn btn-default btn-xs" ng-click="undo()" ng-disabled="!canUseUndo()" title="Отменить">
-                        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
-                    </button>
-                    <button class="btn btn-default btn-xs" ng-click="redo()" ng-disabled="!canUseRedo()" title="Вернуть">
-                        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+                    <button class="btn btn-default btn-xs" title="Добавить изображение" uploader="addImage(url)">
+                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                        <input type="file">
                     </button>
                 </div>
 
                 <div class="btn-group">
                     <button class="btn btn-default btn-xs" ng-click="addText('Новый текст')" title="Добавить текст">
                         <span class="glyphicon glyphicon-text-width" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-default btn-xs" ng-click="undo()" ng-disabled="!canUseUndo()" title="Отменить">
+                        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+                    </button>
+                    <button class="btn btn-default btn-xs" ng-click="redo()" ng-disabled="!canUseRedo()" title="Вернуть">
+                        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
                     </button>
                 </div>
 
@@ -46,6 +53,9 @@
                         </button>
                         <button class="btn btn-default btn-xs" bind-prop="fontStyle" value="italic">
                             <span class="glyphicon glyphicon-italic" aria-hidden="true"></span>
+                        </button>
+                        <button class="btn btn-default btn-xs" bind-prop="textDecoration" value="underline">
+                            <span style="text-decoration: underline;">U</span>
                         </button>
                     </div>
 

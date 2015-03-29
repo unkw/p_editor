@@ -50,3 +50,15 @@ html, body {
     font-size: 12px;
     line-height: 1.5;
 }
+
+.btn input[type="file"] {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    outline: none;
+    cursor: pointer;
+    height: 100%;
+}
