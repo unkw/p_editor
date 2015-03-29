@@ -147,7 +147,6 @@ function EditorCtrl($scope, WorkspaceService, config) {
      */
     $scope.setProp = function(name, value) {
         getActiveCanvas().setProp(name, value);
-        $scope.Utils.updateScope($scope);
     };
 
     /**
