@@ -15,9 +15,7 @@ function EditorCtrl($scope, WorkspaceService, config) {
      */
     $scope.addImage = function(url) {
         var canvas = getActiveCanvas();
-        canvas.addImage(url).then(function(imageObject) {
-
-        });
+        canvas.addImage(url);
     };
 
     /**

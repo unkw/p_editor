@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <button class="close">&times;</button>
+    <h4 class="modal-title">Добавить изображение</h4>
+</div>
+
+<div class="modal-body" upload-image-preview="previewImage">
+    <input type="file">
+    <img ng-src="{{ previewImage }}">
+</div>
+
+<div class="modal-footer" ng-show="previewImage">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Отмена</button>
+</div>
