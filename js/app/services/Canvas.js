@@ -67,7 +67,8 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
             fontSize: 40,
             lineHeight: 1.1,
             padding: 5,
-            fill: config.font.defaultFillColor
+            fill: config.font.defaultFillColor,
+            active: true
         }, options));
         object.set(this.__getRandomPosition(object)).setCoords();
         this.canvas.add(object);
@@ -315,10 +316,23 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
         }
 
         var canvas = this.canvas;
-
         this.__needSaveState = false;
         canvas.clear();
         canvas.loadFromJSON(state, function() {
+            // After new canvas from JSON, fabric doesn't save
+            // active objects. That's why we add them manually
+            var activeObjects = canvas._objects.filter(function(obj) {
+               return obj.active;
+            });
+
+            if (activeObjects.length > 0) {
+                if (activeObjects.length === 1) {
+                    canvas.setActiveObject(activeObjects[0]);
+                } else {
+                    canvas.setActiveGroup(new fabric.Group(activeObjects));
+                }
+            }
+
             canvas.renderAll();
             this.__needSaveState = true;
         }.bind(this));
@@ -329,8 +343,12 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
      * @private
      */
     Canvas.prototype.__saveToHist = function() {
+        var self = this;
+
         if (this.__needSaveState) {
-            this.addState(JSON.stringify(this.canvas));
+            setTimeout(function() {
+                self.addState(self.canvas.toJSON(['active']));
+            }, 100);
         }
     };
 
