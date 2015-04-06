@@ -1,9 +1,9 @@
 <div class="modal-header">
-    <button class="close">&times;</button>
+    <button class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Добавить изображение</h4>
 </div>
 
-<div class="modal-body" upload-image-preview="previewImage">
+<div class="modal-body" upload-image-preview="previewImage" data-cropper="cropper">
     <input type="file">
     <img ng-src="{{ previewImage }}">
 </div>
