@@ -10,27 +10,7 @@ angular.module('editor').directive('uploadImage', function($http, $modal, $parse
 
             element.on('click', function() {
                 var modalInstance = $modal.open({
-                    controller: function($scope, $modalInstance) {
-                        $scope.ok = function() {
-                            $modalInstance.close($scope.previewImage);
-                        };
-
-                        $scope.cancel = function() {
-                            $modalInstance.dismiss('cancel');
-                        };
-
-                        $scope.removeCropper = function() {
-                            if ($scope.cropper) {
-                                $scope.cropper.imgAreaSelect({remove: true});
-                            }
-                        };
-
-                        $modalInstance.result.then(function() {
-                            $scope.removeCropper();
-                        }, function() {
-                            $scope.removeCropper();
-                        });
-                    },
+                    controller: UploadImageCtrl,
                     templateUrl: 'views/upload-image.html?' + Math.round(Math.random() * 1000000),
                     size: 'lg',
                     windowClass: 'modal-upload'
@@ -39,8 +19,6 @@ angular.module('editor').directive('uploadImage', function($http, $modal, $parse
                 modalInstance.result.then(function(url) {
                     onHandler($scope, {url: url});
                 });
-
-                modalInstance.close();
             });
         }
     };
@@ -49,49 +27,22 @@ angular.module('editor').directive('uploadImage', function($http, $modal, $parse
 angular.module('editor').directive('uploadImagePreview', function() {
     return {
         restrict: 'A',
-        scope: {
-            preview: '=uploadImagePreview',
-            cropper: '='
-        },
-
         link: function ($scope, element, attrs) {
-
-            function renderPreview(url) {
-                input.remove();
-                $scope.$apply(function($scope) {
-                    $scope.preview = url;
-                });
-
-                image.on('load', function() {
-                    $scope.cropper = image.imgAreaSelect({
+            $scope.$on('preview:change', function() {
+                element.on('load', function() {
+                    $scope.cropper = element.imgAreaSelect({
                         x1: 0,
                         y1: 0,
-                        x2: image.width(),
-                        y2: image.height(),
+                        x2: element.width(),
+                        y2: element.height(),
                         handles: true,
-                        onSelectEnd: function(img, selection) {
+                        onSelectEnd: function(image, selection) {
                             console.log(selection);
                         }
                     });
                     $scope.$apply();
                 });
-            }
-
-            var image = element.find('img');
-            var input = element.find('input').on('change', function() {
-                var file = input.get(0).files[0];
-                var reader = new FileReader();
-
-                reader.onload = function() {
-                    renderPreview(reader.result);
-                    input.val('');
-                };
-
-                if (file) {
-                    reader.readAsDataURL(file);
-                }
             });
-
         }
     };
 });
