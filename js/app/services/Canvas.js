@@ -43,16 +43,22 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
         var states = this.__states,
             stateLength = states.length;
 
-        if (stateLength !== this.__stateIndex) {
-            states.length = this.__stateIndex;
+        if (new Date().getTime() - (this.__lastHistoryStateTime || 0) < 200) {
+            states.splice(stateLength - 1, 0, state);
+        } else {
+            if (stateLength !== this.__stateIndex) {
+                states.length = this.__stateIndex;
+            }
+
+            if (stateLength === config.maxHistoryLength) {
+                states.shift();
+            }
+
+            this.__stateIndex++;
+            states.push(state);
         }
 
-        if (stateLength === config.maxHistoryLength) {
-            states.shift();
-        }
-
-        this.__stateIndex++;
-        states.push(state);
+        this.__lastHistoryStateTime = new Date().getTime();
     };
 
     /**
@@ -62,16 +68,19 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
      * @returns {fabric.IText}
      */
     Canvas.prototype.addText = function(text, options) {
+        this.__needSaveState = false;
         var object = new fabric.IText(text, angular.extend({
             fontFamily: 'Arial',
             fontSize: 40,
             lineHeight: 1.1,
             padding: 5,
-            fill: config.font.defaultFillColor,
-            active: true
+            fill: config.font.defaultFillColor
         }, options));
         object.set(this.__getRandomPosition(object)).setCoords();
         this.canvas.add(object);
+        this.__needSaveState = true;
+        this.setSelected(object);
+        this.__saveToHist();
         return object;
     };
 
@@ -149,7 +158,7 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
 
         return states[this.__stateIndex - 1];
     };
-    
+
     /**
      * Get selected object or group
      * @param {string} [type]
@@ -179,8 +188,8 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
     Canvas.prototype.isProp = function(name, value) {
         var propValues = this.getProp.apply(this, arguments);
         return propValues.length !== 0 && propValues.every(function(propValue) {
-            return propValue === value;
-        });
+                return propValue === value;
+            });
     };
 
     /**
@@ -322,7 +331,7 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
             // After new canvas from JSON, fabric doesn't save
             // active objects. That's why we add them manually
             var activeObjects = canvas._objects.filter(function(obj) {
-               return obj.active;
+                return obj.active;
             });
 
             if (activeObjects.length > 0) {
@@ -343,12 +352,8 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
      * @private
      */
     Canvas.prototype.__saveToHist = function() {
-        var self = this;
-
         if (this.__needSaveState) {
-            setTimeout(function() {
-                self.addState(self.canvas.toJSON(['active']));
-            }, 100);
+            this.addState(this.canvas.toJSON(['active']));
         }
     };
 
