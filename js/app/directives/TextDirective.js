@@ -31,7 +31,7 @@ angular.module('editor').directive('bindValueTo', function() {
         restrict: 'A',
 
         link: function ($scope, element, attrs) {
-            element.on('change keyup paste select', function() {
+            element.on('change keyup paste', function() {
                 $scope.setProp(attrs.bindValueTo, this.value);
             });
 
