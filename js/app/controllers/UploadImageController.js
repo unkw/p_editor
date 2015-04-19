@@ -5,7 +5,9 @@ function UploadImageCtrl($scope, $modalInstance) {
 
     $scope.ok = function() {
         $scope.$broadcast('preview:close');
-        $modalInstance.close($scope.croppedUrl || $scope.previewUrl);
+        $modalInstance.close({
+            url: $scope.croppedUrl || $scope.previewUrl
+        });
     };
 
     $scope.cancel = function() {
@@ -13,8 +15,11 @@ function UploadImageCtrl($scope, $modalInstance) {
     };
 
     $scope.onLoad = function(url, file) {
-        if (/svg/.test(file.type)) {
-            $modalInstance.close(url);
+        if (/image\/svg/.test(file.type)) {
+            $modalInstance.close({
+                url: url,
+                isVector: true
+            });
         } else {
             $scope.$apply(function($scope) {
                 $scope.previewUrl = url;

@@ -18,14 +18,15 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
      * @param {string} url
      * @returns {*}
      */
-    Canvas.prototype.addImage = function(url) {
+    Canvas.prototype.addImage = function(url, isVector) {
         var deferred = $q.defer();
         var canvas = this.canvas;
 
         fabric.Image.fromURL(url, function (object) {
             object.set({
                 top: 0,
-                left: 0
+                left: 0,
+                lockUniScaling: isVector
             });
 
             this.__setImageScale(object);

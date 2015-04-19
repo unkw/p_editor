@@ -16,8 +16,8 @@ angular.module('editor').directive('uploadImage', function($http, $modal, $parse
                     windowClass: 'modal-upload'
                 });
 
-                modalInstance.result.then(function(url) {
-                    onHandler($scope, {url: url});
+                modalInstance.result.then(function(response) {
+                    onHandler($scope, {url: response.url, isVector: !!response.isVector});
                 });
             });
         }

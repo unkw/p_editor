@@ -12,10 +12,11 @@ function EditorCtrl($scope, WorkspaceService, config) {
 
     /**
      * @param {string} url
+     * @param {boolean} isVector
      */
-    $scope.addImage = function(url) {
+    $scope.addImage = function(url, isVector) {
         var canvas = getActiveCanvas();
-        canvas.addImage(url);
+        canvas.addImage(url, isVector);
     };
 
     /**
