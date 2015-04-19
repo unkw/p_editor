@@ -26,11 +26,13 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
             object.set({
                 top: 0,
                 left: 0
-            }).setCoords();
-            canvas.add(object);
+            });
 
+            this.__setImageScale(object);
+
+            canvas.add(object.setCoords());
             deferred.resolve(object);
-        });
+        }.bind(this));
 
         return deferred.promise;
     };
@@ -354,6 +356,22 @@ angular.module('editor').factory('Canvas', function($rootScope, $q, config) {
     Canvas.prototype.__saveToHist = function() {
         if (this.__needSaveState) {
             this.addState(this.canvas.toJSON(['active']));
+        }
+    };
+
+    /**
+     * @private
+     */
+    Canvas.prototype.__setImageScale = function(o) {
+        var maxW = this.canvas.getWidth() / 2;
+        var maxH = this.canvas.getHeight();
+
+        if (o.getWidth() > maxW) {
+            o.scaleToWidth(maxW);
+        }
+
+        if (o.getHeight() > maxH) {
+            o.scaleToHeight(maxH);
         }
     };
 

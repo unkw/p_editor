@@ -4,7 +4,7 @@
 </div>
 
 <div class="modal-body">
-    <input type="file" file-reader="setPreview(url)" ng-if="!previewUrl">
+    <input type="file" file-reader="onLoad(url, file)" ng-if="!previewUrl">
     <img ng-src="{{ previewUrl }}" upload-image-preview>
 </div>
 

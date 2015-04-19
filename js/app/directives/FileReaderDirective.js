@@ -11,7 +11,7 @@ angular.module('editor').directive('fileReader', function($parse) {
                 var reader = new FileReader();
 
                 reader.onload = function() {
-                    onHandler($scope, {url: reader.result});
+                    onHandler($scope, {url: reader.result, file: file});
                     input.val('');
                 };
 

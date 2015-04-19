@@ -30,18 +30,31 @@ angular.module('editor').directive('uploadImagePreview', function() {
         link: function ($scope, element, attrs) {
             $scope.$on('preview:change', function() {
                 element.on('load', function() {
+                    var image = element.get(0);
+                    var width = image.naturalWidth;
+                    var height = image.naturalHeight;
+
                     $scope.cropper = element.imgAreaSelect({
                         x1: 0,
                         y1: 0,
-                        x2: element.width(),
-                        y2: element.height(),
+                        x2: width,
+                        y2: height,
+                        imageWidth: width,
+                        imageHeight: height,
+                        instance: true,
                         handles: true,
                         onSelectEnd: function(image, selection) {
-                            console.log(selection);
+                            $scope.selection = selection;
                         }
                     });
                     $scope.$apply();
                 });
+
+                element.css('maxHeight', angular.element(window).height() - 150);
+            });
+
+            $scope.$on('preview:close', function() {
+                $scope.croppedUrl = $scope.Utils.cropImage(element.get(0), $scope.cropper.getSelection());
             });
         }
     };
