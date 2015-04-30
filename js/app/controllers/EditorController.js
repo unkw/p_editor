@@ -52,6 +52,7 @@ function EditorCtrl($scope, WorkspaceService, config) {
     $scope.redo = function() {
         getActiveCanvas().redo();
     };
+
     /**
      * Discard selected object or group
      */
